@@ -30,8 +30,10 @@ export class AppComponent implements OnInit{
   request!:ReserveRoomRequest;
   currentCheckInVal!:string;
   currentCheckOutVal!:string;
+  timeConversion!:string;
 
     ngOnInit(){
+      this.getTimeConversion();
       this.englishWelcomeMessage$ = this.httpClient.get(this.baseURL + '/welcome?lang=en-US', { responseType: 'text' });
       this.frenchWelcomeMessage$ = this.httpClient.get(this.baseURL + '/welcome?lang=fr-CA', { responseType: 'text' });
       this.roomsearch= new FormGroup({
@@ -49,6 +51,17 @@ export class AppComponent implements OnInit{
       this.currentCheckInVal = x.checkin;
       this.currentCheckOutVal = x.checkout;
     });
+  }
+
+  getTimeConversion() {
+    this.httpClient.get('http://localhost:8080/api/times/convert', {responseType: 'text'}).subscribe(
+      (res: string) => {
+        this.timeConversion = res;
+      },
+      (error: any) => {
+        console.error(error);
+      }
+    );
   }
 
     onSubmit({value,valid}:{value:Roomsearch,valid:boolean}){
